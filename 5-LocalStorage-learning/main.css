@@ -1,3 +1,8 @@
 * {
   background-color: aliceblue;
-} /*# sourceMappingURL=main.css.map */
+}
+
+input,
+button {
+  margin: 10px;
+}/*# sourceMappingURL=main.css.map */
