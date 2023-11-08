@@ -1,76 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FetchJSON</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
-<style>
-    #map { 
-    height: 380px; 
-    width: 500px;
-    }
-</style>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FetchJSON</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+            crossorigin=""
+        />
+        <script
+            src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""
+        ></script>
+        <style>
+            #map {
+                height: 380px;
+                width: 500px;
+            }
+        </style>
+    </head>
 
+    <body>
+        <h1>Where is the spaceship?</h1>
 
-</head>
+        <ul>
+            <li id="long"></li>
+            <li id="lat"></li>
+        </ul>
 
-<body>
-    
-    <h1>Where is the spaceship?</h1>
+        <div id="map"></div>
 
-    <ul>
-        <li id="long"></li>
-        <li id="lat"></li>
-    </ul>
+        <script>
+            const fetchURL = "https://api.wheretheiss.at/v1/satellites/25544"
 
-    <div id="map"></div>
+            // Návody pro import mapy zde : https://leafletjs.com/index.html
 
+            // deklarace map údajů
 
+            const map = L.map("map").setView([0, 0], 1)
 
-    <script>
+            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                noWrap: true,
+                attribution:
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(map)
 
-const fetchURL = 'https://api.wheretheiss.at/v1/satellites/25544';
+            async function getData() {
+                const response = await fetch(fetchURL)
+                const data = await response.json()
 
-// Návody pro import mapy zde : https://leafletjs.com/index.html
+                const longitude = data.longitude
+                const latitude = data.latitude
 
-// deklarace map údajů
+                const long = (document.getElementById("long").textContent =
+                    longitude)
+                const lat = (document.getElementById("lat").textContent =
+                    latitude)
 
-const map = L.map('map').setView([0, 0], 1);
+                // marker pro mapu
+                L.marker([latitude, longitude]).addTo(map)
+            }
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    noWrap: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-    
-
-
-
-
-async function getData() {
-    const response = await fetch(fetchURL);
-    const data = await response.json();
-
-    const longitude = data.longitude;
-    const latitude = data.latitude;
-    
-    const long = document.getElementById('long').textContent = longitude;
-    const lat = document.getElementById('lat').textContent = latitude;
-
- // marker pro mapu
-    L.marker([latitude, longitude]).addTo(map) 
-};
-
- 
-
-getData();
-
-
-
-    </script>
-</body>
+            getData()
+        </script>
+    </body>
 </html>
 <!-- https://www.youtube.com/watch?v=nZaZ2dB6pow&t=2s -->
